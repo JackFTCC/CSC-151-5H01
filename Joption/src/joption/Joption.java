@@ -27,7 +27,7 @@ public class Joption {
             int genreCount = Integer.parseInt(input);
 
             // Predefined list of song genres
-            List<String> songGenres = Arrays.asList("Rock", "Pop", "Jazz", "Classical", "Hip-Hop", "Electronic", "Country", "Blues", "Reggae", "Folk");
+            List<String> songGenres = Arrays.asList("Instrumental", "Rock", "Pop", " Hip-Hop", "Electronic", "Heavy Metal", "Jazz", "Country", "Blues", "Punk Rock", "Classical", "Alt Rock", "Funk", "Ska", "House", "Reggae", "Dubstep", "Indie", "Disco", "Grunge");
 
             // Pick random genres from the predefined list
             List<String> randomGenres = getRandomGenres(songGenres, genreCount);
