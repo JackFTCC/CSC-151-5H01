@@ -68,40 +68,45 @@ public class Joption {
         return randomGenres;
     }
 
-private static List<String> fetchRandomWikipediaTopics(int count) throws Exception {
-    List<String> topics = new ArrayList<>();
-    String apiUrl = "https://en.wikipedia.org/w/api.php?action=query&list=random&rnlimit=" + count + "&format=json";
+    private static List<String> fetchRandomWikipediaTopics(int count) throws Exception {
+        List<String> topics = new ArrayList<>();
+        String apiUrl = "https://en.wikipedia.org/w/api.php?action=query&list=random&rnlimit=1&format=json";
 
-    URL url = new URL(apiUrl);
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-    connection.setRequestMethod("GET");
+        while (topics.size() < count) {
+            URL url = new URL(apiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
 
-    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-    StringBuilder response = new StringBuilder();
-    String line;
-    while ((line = reader.readLine()) != null) {
-        response.append(line);
-    }
-    reader.close();
-
-    // Parse the JSON response to extract titles
-    String json = response.toString();
-    int index = 0;
-    while ((index = json.indexOf("title\":\"", index)) != -1) {
-        index += 8; // Move past "title":"
-        int endIndex = json.indexOf("\"", index);
-        if (endIndex != -1) {
-            String title = json.substring(index, endIndex);
-            // Exclude unwanted titles (e.g., User talk pages)
-            if (!title.startsWith("User talk:") && !title.startsWith("Talk:") && !title.startsWith("Wikipedia:")) {
-                topics.add(title);
+            if (connection.getResponseCode() != 200) {
+                throw new RuntimeException("Failed : HTTP error code : " + connection.getResponseCode());
             }
-            index = endIndex;
-        }
-    }
 
-    return topics;
-}
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+
+            // Parse the JSON response to extract titles
+            String json = response.toString();
+            int index = json.indexOf("\"title\":\"");
+            if (index != -1) {
+                index += 9; // Move past "title":"
+                int endIndex = json.indexOf("\"", index);
+                if (endIndex != -1) {
+                    String title = json.substring(index, endIndex);
+                    // Only add valid topics (no colons)
+                    if (!title.contains(":")) {
+                        topics.add(title);
+                    }
+                }
+            }
+        }
+
+        return topics;
+    }
 }
 
 
