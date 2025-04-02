@@ -8,6 +8,7 @@ public class numberto1 {
 
         System.out.print("Enter a number: ");
         n = k.nextInt();
+        int nOriginal = n;
 
         do {
         if (n % 2 != 0){
@@ -19,7 +20,7 @@ public class numberto1 {
             n = n/2;
         }
     } while(n != 1);
-    System.out.println("N is = to 1!");
+    System.out.println( "The number " + nOriginal + " has been equaled to 1!");
         k.close();
     }
     
